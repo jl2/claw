@@ -2,8 +2,7 @@
 
 (defvar *foreign-bitmasks* (make-hash-table))
 
- ;; Masks
-
+;; Masks
 ;;; Bitmasks aren't a type so we're not tying into foreign-type
 (defun define-bitmask (name mask)
   (setf (gethash name *foreign-bitmasks*)

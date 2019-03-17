@@ -1,16 +1,5 @@
 (cl:in-package :claw)
 
-(define-constant +variable-cbv-prefix+ "__v_claw_"
-  :test #'equal)
-
-(defparameter *source-template* (alexandria:read-file-into-string
-                                 (asdf:system-relative-pathname :claw
-                                                                "src/template/source.c")))
-
-(defparameter *dynamic-wrapping-template* (alexandria:read-file-into-string
-                                           (asdf:system-relative-pathname :claw
-                                                                          "src/template/dynamic.c")))
-
 
 (defun make-cbv-function-variable (fun)
   (with-slots (c-symbol name fields) fun

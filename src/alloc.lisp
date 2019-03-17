@@ -1,64 +1,62 @@
 (cl:in-package :claw)
 
-(eval-when (:compile-toplevel :load-toplevel :execute)
-  (let (unsigned signed)
-    (map nil
-         (lambda (x)
-           (push (cons (foreign-type-size x) x) unsigned))
-         '(:unsigned-char :unsigned-short :unsigned-int
-           :unsigned-long :unsigned-long-long))
-    (map nil
-         (lambda (x)
-           (push (cons (foreign-type-size x) x) signed))
-         '(:char :short :int :long :long-long))
-    (define-foreign-type 'int8 (aval 1 signed))
-    (define-foreign-type 'uint8 (aval 1 unsigned))
-    (define-foreign-type 'int16 (aval 2 signed))
-    (define-foreign-type 'uint16 (aval 2 unsigned))
-    (define-foreign-type 'int32 (aval 4 signed))
-    (define-foreign-type 'uint32 (aval 4 unsigned))
-    (define-foreign-type 'int64 (aval 8 unsigned))
-    (define-foreign-type 'uint64 (aval 8 unsigned))
-    #+x86-64
-    (define-foreign-type 'size-t 'uint64)
-    #+x86
-    (define-foreign-type 'size-t 'uint32)
-    #+arm
-    (define-foreign-type 'size-t 'uint32))
+(let (unsigned signed)
+  (map nil
+       (lambda (x)
+         (push (cons (foreign-type-size x) x) unsigned))
+       '(:unsigned-char :unsigned-short :unsigned-int
+         :unsigned-long :unsigned-long-long))
+  (map nil
+       (lambda (x)
+         (push (cons (foreign-type-size x) x) signed))
+       '(:char :short :int :long :long-long))
+  (define-foreign-type 'int8 (aval 1 signed))
+  (define-foreign-type 'uint8 (aval 1 unsigned))
+  (define-foreign-type 'int16 (aval 2 signed))
+  (define-foreign-type 'uint16 (aval 2 unsigned))
+  (define-foreign-type 'int32 (aval 4 signed))
+  (define-foreign-type 'uint32 (aval 4 unsigned))
+  (define-foreign-type 'int64 (aval 8 unsigned))
+  (define-foreign-type 'uint64 (aval 8 unsigned))
+  #+x86-64
+  (define-foreign-type 'size-t 'uint64)
+  #+x86
+  (define-foreign-type 'size-t 'uint32)
+  #+arm
+  (define-foreign-type 'size-t 'uint32))
 
-  (define-foreign-function '(c-malloc "malloc") :pointer
-    '((size size-t)))
+(define-foreign-function '(c-malloc "malloc") :pointer
+  '((size size-t)))
 
-  (define-foreign-function '(c-calloc "calloc") :pointer
-    '((nmemb size-t)
-      (size size-t)))
+(define-foreign-function '(c-calloc "calloc") :pointer
+  '((nmemb size-t)
+    (size size-t)))
 
-  (define-foreign-function '(c-free "free") :void
-    '((ptr :pointer)))
+(define-foreign-function '(c-free "free") :void
+  '((ptr :pointer)))
 
-  (define-foreign-function '(c-realloc "realloc") :pointer
-    '((ptr :pointer)
-      (size size-t)))
+(define-foreign-function '(c-realloc "realloc") :pointer
+  '((ptr :pointer)
+    (size size-t)))
 
-  (define-foreign-function '(c-memset "memset") :pointer
-    '((s :pointer)
-      (c :int)
-      (n size-t)))
+(define-foreign-function '(c-memset "memset") :pointer
+  '((s :pointer)
+    (c :int)
+    (n size-t)))
 
-  (define-foreign-function '(c-memcpy "memcpy") :pointer
-    '((dest :pointer)
-      (src :pointer)
-      (n size-t))))
+(define-foreign-function '(c-memcpy "memcpy") :pointer
+  '((dest :pointer)
+    (src :pointer)
+    (n size-t)))
 
-(eval-when (:compile-toplevel :load-toplevel :execute)
-  (define-cfun c-malloc)
-  (define-cfun c-calloc)
-  (define-cfun c-free)
-  (define-cfun c-realloc)
-  (define-cfun c-memset)
-  (define-cfun c-memcpy))
+(define-cfun c-malloc)
+(define-cfun c-calloc)
+(define-cfun c-free)
+(define-cfun c-realloc)
+(define-cfun c-memset)
+(define-cfun c-memcpy)
 
- ;; Allocating things
+;; Allocating things
 
 (defun alloc-ptr (type &optional (count 1))
   "Return a pointer allocated to the size of `TYPE`"

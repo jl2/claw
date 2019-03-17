@@ -2,7 +2,7 @@
 
 ;;; Simplified FFI layer, built on CFFI-SYS.
 
-(define-constant +cbv-prefix+ "__claw_"
+(define-constant +adapted-function-prefix+ "__claw_"
   :test #'equal)
 
  ;; Global
